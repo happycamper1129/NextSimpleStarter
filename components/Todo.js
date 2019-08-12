@@ -1,84 +1,79 @@
-import React, { useState, useContext } from 'react'
-import Paper from '@material-ui/core/Paper'
-import TextField from '@material-ui/core/TextField'
-import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles'
-import { TodoContext } from '../contexts/todo'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+
+import { addTodo, removeTodo } from '../actions/todo'
 import TodoItem from './TodoItem'
 
-const useStyles = makeStyles(theme => ({
-	todo: {
-		maxWidth: 400,
-		margin: 'auto',
-		marginTop: 40,
-		textAlign: 'center'
-	},
-	form: {
-		padding: theme.spacing(2)
-	},
-	list: {
-		listStyle: 'none',
-		padding: 0
-	}
-}))
-
-const Todo = () => {
-	const classes = useStyles()
-	const [text, setText] = useState('')
-	const { addTodo, removeTodo, updateTodo, todos } = useContext(TodoContext)
-	const completedTodos = todos.filter(todo => todo.isCompleted)
+const Todo = ({ todos, addTodo, removeTodo }) => {
+	const [text, changeText] = useState('')
 
 	const handleAddTodo = e => {
 		e.preventDefault()
 
 		addTodo(text)
-		setText('')
+		changeText('')
 	}
 
 	const handleTextChange = e => {
-		setText(e.target.value)
+		changeText(e.target.value)
 	}
 
 	return (
-		<Grid
-			container
-			className={classes.todo}
-			justify="center"
-			direction="column"
-		>
-			<header>
-				<img src="/static/img/android-chrome-192x192.png" alt="Logo" />
-			</header>
-			<Paper component="main">
-				<form onSubmit={handleAddTodo} className={classes.form}>
-					<TextField
-						fullWidth
+		<div className="mdl-card mdl-shadow--2dp">
+			<form onSubmit={handleAddTodo}>
+				<div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input
+						type="text"
 						value={text}
-						margin="normal"
-						label="What must be done?"
 						onChange={handleTextChange}
-						inputProps={{ 'aria-label': 'What should be done?' }}
+						className="mdl-textfield__input"
+						id="input"
 					/>
-					{!!todos.length && (
-						<Grid container justify="space-between">
-							<Grid item>Total: {todos.length}</Grid>
-							<Grid item>Completed: {completedTodos.length}</Grid>
-						</Grid>
-					)}
-				</form>
-				<ul className={classes.list}>
-					{todos.map((todo, i) => (
-						<TodoItem
-							key={i}
-							todo={todo}
-							remove={removeTodo}
-							update={updateTodo}
-						/>
-					))}
-				</ul>
-			</Paper>
-		</Grid>
+					<label className="mdl-textfield__label" htmlFor="input">
+						What must be done?
+					</label>
+				</div>
+			</form>
+
+			<ul>
+				{todos.map((todo, i) => (
+					<TodoItem key={i} todo={todo} remove={removeTodo} />
+				))}
+			</ul>
+			<style>{`
+						form {
+							background: #fff;
+							padding: 10px;
+						}
+						ul {
+							min-height: 100px;
+							margin: 0;
+							padding: 0;
+							text-align: left;
+							list-style: none;
+						}
+						ul li {
+							padding: 10px;
+							background: #FFF;
+							border-bottom: 1px solid #EEE;
+						}
+						ul li:nth-child(2n) {
+							background: #EEF6FF;
+						}
+						ul li:last-child {
+							border-bottom: none;
+						}
+						.mdl-card {
+							margin: auto;
+							transition: all .3s;
+							transform: translateY(100px);
+						}
+					`}</style>
+		</div>
 	)
 }
 
-export default Todo
+export default connect(
+	({ todos }) => ({ todos }),
+	{ addTodo, removeTodo }
+)(Todo)

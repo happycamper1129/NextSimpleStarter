@@ -1,31 +1,25 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Fab from '@material-ui/core/Fab'
-import Badge from '@material-ui/core/Badge'
 
-const useStyles = makeStyles(() => ({
-	fork: {
-		position: 'absolute',
-		right: 30,
-		top: 30
-	}
-}))
-
-const Fork = ({ stars }) => {
-	const classes = useStyles()
-	return (
-		<div className={classes.fork}>
-			<Badge badgeContent={stars || 0} max={999} color="primary">
-				<Fab
-					variant="extended"
-					href="https://github.com/ooade/NextSimpleStarter"
-					target="_blank"
-				>
+const Fork = ({ stars }) => (
+	<div>
+		<div
+			className="material-icons mdl-badge mdl-badge--overlap"
+			data-badge={stars || 0}
+		>
+			<a href="https://github.com/ooade/NextSimpleStarter">
+				<button className="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
 					Fork me
-				</Fab>
-			</Badge>
+				</button>
+			</a>
 		</div>
-	)
-}
+		<style>{`
+			.mdl-badge {
+				position: absolute;
+				top: 30px;
+				right: 15px;
+			}
+		  `}</style>
+	</div>
+)
 
 export default Fork

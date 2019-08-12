@@ -1,16 +1,23 @@
 import 'isomorphic-fetch'
 import React from 'react'
+import { connect } from 'react-redux'
+
 import Fork from '../components/Fork'
 import Todo from '../components/Todo'
 
+// Port in to using useState hooks, if you need state
 const Index = ({ stars }) => (
-	<React.Fragment>
+	<div>
 		<Fork stars={stars} />
-		<Todo />
-	</React.Fragment>
+		<div>
+			<Todo />
+		</div>
+	</div>
 )
 
-Index.getInitialProps = async () => {
+Index.getInitialProps = async({ store }) => {
+	// Adding a default/initialState can be done as follows:
+	// store.dispatch({ type: 'ADD_TODO', text: 'It works!' });
 	const res = await fetch(
 		'https://api.github.com/repos/ooade/NextSimpleStarter'
 	)
@@ -18,4 +25,4 @@ Index.getInitialProps = async () => {
 	return { stars: json.stargazers_count }
 }
 
-export default Index
+export default connect()(Index)
